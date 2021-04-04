@@ -772,7 +772,7 @@ downloads.html)
         ```{.sql}
         CREATE DATABASE IF NOT EXISTS hadoop_edu;
         USE hadoop_edu;
-        CREATE EXTERNAL TABLE employee
+        CREATE EXTERNAL TABLE hadoop_edu.employee
         (
             employee_id INT,
             birthday DATE,
@@ -788,7 +788,7 @@ downloads.html)
         LOCATION '/user/root/hadoop_edu/employees'
         ```
         ```{.sql}
-        CREATE EXTERNAL TABLE salary
+        CREATE EXTERNAL TABLE hadoop_edu.salary
         (
             employee_id INT,
             salary INT,
@@ -816,7 +816,7 @@ downloads.html)
         3. 연봉 Top 100 리스트 추출 후 테이블로 저장, 확인
             ```{.sql}
             SET hive.exec.dynamic.partition.mode=nonstrict;
-            CREATE EXTERNAL TABLE IF NOT EXISTS top_100_salary_employee (
+            CREATE EXTERNAL TABLE IF NOT EXISTS hadoop_edu.top_100_salary_employee (
                 employee_id INT,
                 first_name STRING,
                 family_name STRING,
@@ -825,22 +825,28 @@ downloads.html)
             PARTITIONED BY (gender string)
             STORED AS ORC
             LOCATION '/user/root/hadoop_edu/top_100_salary_employee';
-            INSERT OVERWRITE TABLE top_100_salary_employee PARTITION (gender)
+            INSERT OVERWRITE TABLE hadoop_edu.top_100_salary_employee PARTITION (gender)
             SELECT e.employee_id, e.first_name, e.family_name, avg(s.salary) as avg_salary, e.gender
-            FROM employee as e join salary as s on (e.employee_id == s.employee_id)
+            FROM hadoop_edu.employee as e join hadoop_edu.salary as s on (e.employee_id == s.employee_id)
             GROUP BY e.employee_id, e.first_name, e.family_name, e.gender
             ORDER BY avg_salary
             LIMIT 100;
             ```
             ```{.sql}
             SELECT gender, count(*) cnt
-            FROM top_100_salary_employee
+            FROM hadoop_edu.top_100_salary_employee
             GROUP BY gender;
             ```
+            <p align="center">
+            <img src = "ImageForREADME/top1.png", width="100%">
+            </p>
             데이터가 저장된 HDFS 경로 확인
             ```{.bash}
             hadoop dfs -ls /user/root/hadoop_edu/top_100_salary_employee
             ```
+            <p align="center">
+            <img src = "ImageForREADME/top2.png", width="100%">
+            </p>
 ----------------------------------------------
 
 ## License
