@@ -57,28 +57,26 @@
 ----------------------------------------------
 
 ## Hadoop Installation
-1. **Java**(JDK 1.8) 버전 확인 및 [설치](https://www.oracle.com/kr/java/te
-chnologies/javase/javase-jdk8-
-downloads.html)
-    ```{.bash}
+1. **Java**(JDK 1.8) 버전 확인 및 [설치](https://www.oracle.com/kr/java/technologies/javase/javase-jdk8-downloads.html)
+    ```bash
     ~# java -version
     ```
 2. **Hadoop**(3.3.0) 버전 확인 및 [설치](http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-3.3.0/)
-    ```{.bash}
+    ```bash
     ~# hadoop version
     ```
 3. **Hive**(3.1.2) 버전 확인 및 [설치](http://apache.mirror.cdnetworks.com/hive/hive-3.1.2/)
-    ```{.bash}
+    ```bash
     ~# hive --version
     ```
 4. Hadoop, Hive **설치**
     - 압축 파일을 특정 디렉토리로 이동시키고 압축을 푼다. (내 기준 디렉토리 = /root/Platform)
-    ```{.bash}
+    ```bash
     (특정디렉토리)# tar xvfz hadoop-3.3.0.tar.gz
     (특정디렉토리)# tar xvfz apache-hive-3.1.2-bin.tar.gz
     ```
 5. **환경 변수 설정** 필요 (**개인 OS, 설치 경로, 버전 확인**)
-    ```{.bash}
+    ```bash
     ~# vi .bashrc
     export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
     export PATH=$JAVA_HOME/bin/:$PATH
@@ -96,11 +94,11 @@ downloads.html)
     ~# source .bashrc
     ```
 6. **Hadoop 설정 파일** 수정
-    ```{.bash}
+    ```bash
     # cd /root/Platform/hadoop-3.3.0/etc/hadoop
     ```
     1. **hadoop-env.sh** 하둡 환경설정 파일
-        ```{.bash}
+        ```bash
         export HDFS_NAMENODE_USER=root
         export HDFS_DATANODE_USER=root
         export HDFS_SECONDARYNAMENODE_USER=root
@@ -111,7 +109,7 @@ downloads.html)
         export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
         ```
     2. **core-site.xml** 하둡 코어 설정
-        ```{.html}
+        ```html
         <configuration>
             <property>
                 <name>fs.defaultFS</name>
@@ -121,14 +119,14 @@ downloads.html)
         ```
         추가로 fsimage 파일을 저장할 디렉토리를 지정할 수도 있다.  
         default 위치 = /tmp/hadoop-이름/dfs/name/current
-        ```{.html}
+        ```html
         <property>
             <name>dfs.namenode.name.dir</name>
             <value>내가 원하는 디렉토리</value>
         </property>
         ```
     3. **hdfs-site.xml** 하둡 분산파일 시스템에 대한 설정
-        ```{.html}
+        ```html
         <configuration>
             <property>
                 <name>dfs.replication</name>
@@ -137,12 +135,12 @@ downloads.html)
         </configuration>
         ```
     4. Hadoop **NameNode Format**
-        ```{.bash}
+        ```bash
         (HADOOP_HOME)# bin/hdfs namenode -format
         ```
     5. **DFS Daemon 실행** 및 확인 (localhost:9870)  
         HDFS의 상태를 확인
-        ```{.bash}
+        ```bash
         (HADOOP_HOME)# sbin/start-dfs.sh
         ```
         <p align="center">
@@ -152,7 +150,7 @@ downloads.html)
         <img src = "ImageForREADME/dfsWeb.png", width="100%">
         </p> 
     6. **mapred-site.xml** 설정
-        ```{.html}
+        ```html
         <configuration>
             <property>
                 <name>mapreduce.framework.name</name>
@@ -177,7 +175,7 @@ downloads.html)
         </configuration>
         ```
     7. **yarn-site.xml** 설정
-        ```{.html}
+        ```html
         <configuration>
             <property>
                 <name>yarn.nodemanager.aux-services</name>
@@ -191,7 +189,7 @@ downloads.html)
         ```
     8. **YARN Daemon 실행** 및 확인 (localhost:8088)  
         어플리케이션 실행 상태 관리 도구
-        ```{.bash}
+        ```bash
         (HADOOP_HOME)# sbin/start-yarn.sh
         ```
         <p align="center">
@@ -242,7 +240,7 @@ downloads.html)
     3. 일반적으로 레이드 구성을 하지 않는다. (JBOD, Just Bunch Of Disks)
     4. Block Report : Name Node가 시작될 때, 그리고 주기적으로 로컬파일시스템에 있는 모든 HDFS 블록들을 검사 후 정상적인 블록의 목록을 만들어 NameNode에 전송.
 10. Java에서 HDFS 파일 읽기 샘플 코드
-    ```{.java}
+    ```java
     FileSystem fileSystem = FileSystem.get(conf);
     Path path = new Path("/path/to/file.ext");
     if(!fileSystem.exists(path)){
@@ -259,7 +257,7 @@ downloads.html)
     fileSystem.close();
     ```
 11. Java에서 HDFS 파일 쓰기 샘플 코드
-    ```{.java}
+    ```java
     FileSystem fileSystem = FileSystem.get(conf);
     // Check if the file already exists
     Path path = new Path("/path/to/file.ext");
@@ -281,7 +279,7 @@ downloads.html)
     fileSystem.close();
     ```
 12. **기본 HDFS Commands**  
-    ```{.bash}
+    ```bash
     # hadoop version : 하둡 버전확인
     # hadoop fs -mkdir /tmp : Linux와 동일
     # hadoop fs -ls [-R] / : Linux와 동일
@@ -319,7 +317,7 @@ downloads.html)
     5. 주로 Missing Block(Replication Block이 하나도 없는 경우)이 발생하는 경우, 혹은 클러스터 재 구동 시 블록 리폴트를 다 받기 전까지 safe mode로 동작
     6. 세이프 모드 상태일 때 파일 복사를 시도하면 에러 메시지 발생
     7. 세이프 모드 명령어 및 복구  
-    ```{.bash}
+    ```bash
     # hdfs dfsadmin -safemode get
     Safe mode is OFF
     # hdfs dfsadmin -safemode enter
@@ -332,7 +330,7 @@ downloads.html)
 16. **HDFS 휴지통 설정 및 명령어**
     1. HDFS는 데이터 삭제 시 영구적 데이터를 삭제하지 않도록 휴지통 설정을 할 수 있음.
     2. core-site.xml에 설정
-    ```{.html}
+    ```html
     <property>
         <name>fs.trash.interval</name>
         <value>1440</value>
@@ -342,7 +340,7 @@ downloads.html)
         <value>120</value>
     </property>
     ```
-    ```{.bash}
+    ```bash
     # hadoop fs -expunge : 휴지통 비우기
     # hadoop fs -rm -skipTrash /user/data/file : 휴지통 이용하지 않고 삭제
     ``` 
@@ -429,7 +427,7 @@ downloads.html)
     7. **setup 함수**
         1. 맵리듀스 프레임워크는 map, reduce 함수의 실행 전 setup 함수를 호출한다. 작업에 필요한 설정값과 전처리를 여기서 처리 (컨텍스트에서 설정값을 가져와서 설정에 이용)
         2. Java 코드
-            ```{.java}
+            ```java
             @Override
             public void setup(Context context) throws IOException, InterruptedException {
                 conf = context.getConfiguration();
@@ -440,7 +438,7 @@ downloads.html)
     8. **Counter (카운터)**
         1. 카운터는 enum을 이용하여 카운터를 등록하고, 컨텍스트에서 카운터를 가져와서 사용. 카운터는 로그에서 확인할 수 있다.
         2. Java 코드
-            ```{.java}
+            ```java
             // 문자의 개수를 새는 카운터
             static enum CountersEnum{
                 INPUT_WORDS
@@ -494,7 +492,7 @@ downloads.html)
 8. **맵리듀스 개발 실습**
     1. **메이븐 프로젝트** 생성(hadoop_edu)
     2. **pom.xml** 파일 dependency 설정
-        ```{.html}
+        ```html
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -524,7 +522,7 @@ downloads.html)
         ```
     3. **WordCountMapper** 구현
     4. **WordCountReduer** 구현 (10번 이상 나온 단어만 추출하기 위해 코드 수정)
-        ```{.java}
+        ```java
         if (sum >= 10){
             context.write(key, new IntWritable(sum));
         }
@@ -534,7 +532,7 @@ downloads.html)
         <img src = "ImageForREADME/wcInstall.png", width="100%">
         </p>
     6. **생성된 jar 파일**을 HADOOP_HOME으로 복사
-        ```{.bash}
+        ```bash
         hadoop_edu/target# ll
         hadoop_edu/target# mv hadoop_edu-1.0-SNAPSHOT.jar ~/Platform/hadoop-3.3.0
         hadoop_edu/target# cd ~/Platform/hadoop-3.3.0/
@@ -544,7 +542,7 @@ downloads.html)
         <img src = "ImageForREADME/mvjar.png", width="100%">
         </p>
     7. HADOOP_HOME의 LICENSE.txt 파일을 **하둡으로 복사**
-        ```{.bash}
+        ```bash
         hadoop-3.3.0# ls
         hadoop-3.3.0# hadoop dfs -mkdir /input
         hadoop-3.3.0# hadoop dfs -put LICENSE.txt /input
@@ -554,7 +552,7 @@ downloads.html)
         <img src = "ImageForREADME/putlicense.png", width="100%">
         </p>
     8. WordCount **실행**
-        ```{.bash}
+        ```bash
         hadoop jar jar파일 사용할Class <HDFS Input File> <HDFS Output Dest>
 
         hadoop-3.3.0# hadoop jar hadoop_edu-1.0-SNAPSHOT.jar com.sk.hadoop.WordCount /input/LICENSE.txt /output
@@ -563,7 +561,7 @@ downloads.html)
         <img src = "ImageForREADME/jarresult.png", width="100%">
         </p>
     9. 실행 후 **결과 확인**
-        ```{.bash}
+        ```bash
         hadoop-3.3.0# hadoop dfs -ls /output
         hadoop-3.3.0# hadoop dfs -text /output/part-r-00000
         ```
@@ -571,7 +569,7 @@ downloads.html)
         <img src = "ImageForREADME/textresult.png", width="100%">
         </p>
     10. **로컬 복사** 후 결과 확인
-        ```{.bash}
+        ```bash
         hadoop-3.3.0# ls
         hadoop-3.3.0# hadoop dfs -copyToLocal /output/part-r-00000
         hadoop-3.3.0# ls
@@ -582,46 +580,46 @@ downloads.html)
         </p>
 9. **맵리듀스 최적화** <sub>(hdfs-site.xml, mapred-site.xml 등에 설정)</sub>
     1. Mapper, Reducer 개수 조절 : 분산 처리가 잘 될수록 성능은 Linear하게 증가함
-        ```{.html}
+        ```html
         <property>
-        <name>mapreduce.job.maps</name>
-        <value>100</value>
+            <name>mapreduce.job.maps</name>
+            <value>100</value>
         </property>
         <property>
-        <name>mapreduce.job.reduces</name>
-        <value>50</value>
+            <name>mapreduce.job.reduces</name>
+            <value>50</value>
         </property>
         ```
     2. 정렬 속도 튜닝 : 맵 작업은 임시 결과 파일 개수를 줄이는 것으로 성능을 개선할 수 있다. 로컬 디스크에 저장된 파일이 줄어들수록 맵 출력 데이터의 병합, 네트워크 전송, 리듀서의 병합작업 시간이 단축된다. 스필되는 파일을 줄이려면 스필전 메모리 버퍼 크기인 io.sort.mb를 늘이면 된다. 메모리 버퍼가 커져서 로컬에 저장될 출력 데이터가 줄어들게 된다.
-        ```{.html}
+        ```html
         <property>
-        <name>mapreduce.task.io.sort.mb</name>
-        <value>200</value>
+            <name>mapreduce.task.io.sort.mb</name>
+            <value>200</value>
         </property>
         <property>
-        <name>mapreduce.map.sort.spill.percent</name>
-        <value>0.80</value>
+            <name>mapreduce.map.sort.spill.percent</name>
+            <value>0.80</value>
         </property>
         <property>
-        <name>mapreduce.task.io.sort.factor</name>
-        <value>100</value>
+            <name>mapreduce.task.io.sort.factor</name>
+            <value>100</value>
         </property>
         ```
     3. Combiner 클래스 적용 : 컴바이너를 적용하면 맵 작업의 결과 데이터가 리듀서로 전송되기 전에 컴바이너 작업을 진행하여, 데이터를 줄여서 네트워크 사용량을 줄이고 리듀서의 작업 속도를 향상 시킬 수 있다.
-        ```{.java}
+        ```java
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class); // 컴바이너 적용
         job.setReducerClass(IntSumReducer.calss);
         ```
     4. 맵출력 데이터 압축 : 맵 출력 데이터를 압축하여 네트워크 트래픽을 줄여 주면 플레인 텍스트를 이용할 때보다 속도가 증가할 수 있다.
-        ```{.html}
+        ```html
         <property>
-        <name>mapreduce.map.output.compress</name>
-        <value>true</value>
+            <name>mapreduce.map.output.compress</name>
+            <value>true</value>
         </property>
         <property>
-        <name>mapreduce.map.output.compress.codec</name>
-        <value>org.apache.hadoop.io.compress.SnappyCodec</value>
+            <name>mapreduce.map.output.compress.codec</name>
+            <value>org.apache.hadoop.io.compress.SnappyCodec</value>
         </property>
         ```
 10. YARN 스케쥴러
@@ -647,15 +645,15 @@ downloads.html)
     6. 가장 역사가 오래된 SQL on Hadoop 엔진
 2. Hive **설치**
     1. 템플릿 파일 변경하여 **hive-env.sh 파일 생성**
-        ```{.bash}
+        ```bash
         (HIVE_HOME)# mv conf/hive-env.sh.template conf/hive-env.sh
         ```
     2. hive-env.sh 파일에 **하둡 홈 경로 설정**
-        ```{.bash}
+        ```bash
         HADOOP_HOME=/root/Platform/hadoop-3.3.0
         ```
     3. **hive-site.xml** 설정
-        ```{.html}
+        ```html
         <?xml version="1.0"?>
         <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
         <configuration>
@@ -670,7 +668,7 @@ downloads.html)
         </configuration>
         ```
     4. Hive에서 업로드하는 데이터는 HDFS의 /user/hive/warehouse에 저장, Hive에서 실행하는 잡의 여유 공간으로 HDFS의 "/tmp/hive-유저명" 디렉터리를 사용, 이 두개의 디렉터리를 미리 생성한 후 실행 권한도 함께 설정
-        ```{.bash}
+        ```bash
         (HADOOP_HOME)# bin/hdfs dfs -ls -R /
         (HADOOP_HOME)# bin/hdfs dfs -mkdir /tmp/hove
         (HADOOP_HOME)# bin/hdfs dfs -mkdir /user
@@ -684,11 +682,11 @@ downloads.html)
         <img src = "ImageForREADME/hivecommand.png", width="100%">
         </p>
     5. **이슈 해결을 위해 Hive lib 폴더에 guava 라이브러리 삭제 후 하둡 lib에서 복사** [참고](https://issues.apache.org/jira/browse/HIVE-22915)
-        ```{.bash}
+        ```bash
         # cp ~/Platform/hadoop-3.3.0/share/hadoop/hdfs/lib/guava-27.0-jre.jar ~/Platform/apache-hive-3.1.2-bin/lib
         ```
     6. Derby 메타스토어 초기화(HIVE_HOME에서)
-        ```{.bash}
+        ```bash
         (HIVE_HOME)# bin/schematool -initSchema -dbType derby
         ```
 3. Hive 서비스
@@ -719,7 +717,7 @@ downloads.html)
         |확장 가능성|사용자 정의 함수, 저장 프로시저|사용자 정의 함수, 맵-리듀스 스크립트|
 5. **HQL(Hive Query Language)**
     1. **테이블 생성**
-        ```{.sql}
+        ```sql
         CREATE [EXTERNAL] TABLE page_view(
             viewTime INT,
             userid BIGINT,
@@ -739,37 +737,37 @@ downloads.html)
 6. 하이브 **실습**
     1. **실습 데이터** 다운로드 ([파일1](https://github.com/RobinDong/hive-examples/blob/master/employee/employees.csv.gz), [파일2](https://github.com/RobinDong/hive-examples/blob/master/employee/salaries.csv.gz))
     2. 압축 풀기
-        ```{.bash}
+        ```bash
         gunzip employees.csv.gz
         gunzip salaries.csv.gz
         ```
     3. **vi 로 작은 따옴표 제거**
-        ```{.bash}
+        ```bash
         vi employees.csv
         명령행
         :%s/'//g
         ```
     4. **HDFS에 데이터 저장**
         1. 하둡 디렉토리 생성
-            ```{.bash}
+            ```bash
             hadoop dfs -mkdir -p /user/root/hadoop_edu/employees
             hadoop dfs -mkdir -p /user/root/hadoop_edu/salaries
             ```
         2. 하둡에 데이터 저장
-            ```{.bash}
+            ```bash
             hadoop fs -put employees.csv /user/root/hadoop_edu/employees/
             hadoop fs -put salaries.csv /user/root/hadoop_edu/salaries
             ```
         3. 저장 상태 확인
-            ```{.bash}
+            ```bash
             hadoop dfs -du -h /user/root/hadoop_edu
             ```
     5. **Hive 접속**
-        ```{.bash}
+        ```bash
         (HIVE_HOME)/bin# hive
         ```
     6. **테이블 생성**
-        ```{.sql}
+        ```sql
         CREATE DATABASE IF NOT EXISTS hadoop_edu;
         USE hadoop_edu;
         CREATE EXTERNAL TABLE hadoop_edu.employee
@@ -787,7 +785,7 @@ downloads.html)
         STORED AS textfile
         LOCATION '/user/root/hadoop_edu/employees'
         ```
-        ```{.sql}
+        ```sql
         CREATE EXTERNAL TABLE hadoop_edu.salary
         (
             employee_id INT,
@@ -814,7 +812,7 @@ downloads.html)
             <img src = "ImageForREADME/select22.png", width="100%">
             </p>
         3. 연봉 Top 100 리스트 추출 후 테이블로 저장, 확인
-            ```{.sql}
+            ```sql
             SET hive.exec.dynamic.partition.mode=nonstrict;
             CREATE EXTERNAL TABLE IF NOT EXISTS hadoop_edu.top_100_salary_employee (
                 employee_id INT,
@@ -832,7 +830,7 @@ downloads.html)
             ORDER BY avg_salary
             LIMIT 100;
             ```
-            ```{.sql}
+            ```sql
             SELECT gender, count(*) cnt
             FROM hadoop_edu.top_100_salary_employee
             GROUP BY gender;
@@ -841,7 +839,7 @@ downloads.html)
             <img src = "ImageForREADME/top1.png", width="100%">
             </p>
             데이터가 저장된 HDFS 경로 확인
-            ```{.bash}
+            ```bash
             hadoop dfs -ls /user/root/hadoop_edu/top_100_salary_employee
             ```
             <p align="center">
